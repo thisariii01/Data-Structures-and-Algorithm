@@ -1,0 +1,88 @@
+#include <iostream>
+#include <chrono>
+
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* next;
+};
+
+Node* top = NULL;
+
+//Pushes the given value onto the stack
+void Push(int value) {
+    Node* new_node = new Node();
+    new_node -> data = value;
+    new_node -> next = top;
+    top = new_node;
+}
+
+//Deletes the topmost element of the stack and returns that value
+int Pop() {
+    if (top == NULL) {
+        cout << "Stack is empty!" << endl;
+        return -1;
+    }
+    int Value = top->data;
+    Node* temp = top;
+    top = top->next;
+    delete temp;
+    return Value;
+}
+
+//Checks if the Stack is empty
+bool isEmpty() {
+    return top == NULL;
+}
+
+int StackTop() {
+    if (top == NULL) {
+        cout << "Stack is empty!" << endl;
+        return -1;
+    }
+    return top->data;
+}
+
+void Display() {
+    Node* current_node = top;
+    cout << "Stack:" << endl;
+    while (current_node != NULL) {
+        cout << current_node->data << endl;;
+        current_node = current_node->next;
+    }
+    cout << endl;
+}
+
+int main(){
+    // Measure the time it takes for the function to run
+    auto start_time = chrono::high_resolution_clock::now();
+    Push(8);
+    Push(10);
+    Push(5);
+    Push(11);
+    Push(15);
+    Push(23);
+    Push(6);
+    Push(18);
+    Push(20);
+    Push(17);;
+    Display();
+    Pop();
+    Pop();
+    Pop();
+    Pop();
+    Pop();
+    Display();
+    Push(4);
+    Push(30);
+    Push(3);
+    Push(1);
+    Display();
+    auto end_time = chrono::high_resolution_clock::now();
+    
+    auto elapsed_time_ms = chrono::duration_cast<chrono::microseconds>(end_time - start_time).count();
+
+    cout << "Elapsed time for Stack operations using Linked List Implementation: " << elapsed_time_ms << " microseconds" << endl;
+}
