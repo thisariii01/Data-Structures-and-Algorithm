@@ -27,7 +27,7 @@ struct node *createNode(int key){
 // Insert a node
 struct node *insertNode(struct node *root, int key) {
     if (root == NULL) return createNode(key);
-    else if (key < root->key) root->left = insertNode(root->left,key);
+    else if (key <= root->key) root->left = insertNode(root->left,key);
     else if (key > root->key) root->right = insertNode(root->right,key);
     return root;
 }
@@ -42,25 +42,23 @@ struct node *minNode(struct node* root){
 
 // Deleting a node
 struct node *deleteNode(struct node *root, int key) {
-    if (root == NULL) return NULL;
-    if (key < root->key) root->left = deleteNode(root->left,key);
-    else if (key > root->key) root->right = deleteNode(root->right,key);
+    if (root == NULL) return root;
+    if (key < root->key) root->left = deleteNode(root->left, key);
+    else if (key > root->key) root->right = deleteNode(root->right, key);
     else {
-        if (root->right = NULL){
+        if (root->left == NULL) {
             node* temp = root->right;
             delete root;
             return temp;
-        }
-        else if (root->right = NULL){
+        } 
+        else if (root->right == NULL) {
             node* temp = root->left;
             delete root;
             return temp;
         }
-        else{
-            node* temp = minNode(root->right);
-            root->key = temp->key;
-            root->right = deleteNode(root->right,temp->key);
-        }
+        node* temp = minNode(root->right);
+        root->key = temp->key;
+        root->right = deleteNode(root->right, temp->key);
     }
     return root;
 }
