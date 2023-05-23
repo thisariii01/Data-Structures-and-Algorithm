@@ -1,0 +1,60 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <climits>
+
+using namespace std;
+
+typedef pair<int, int> wvpair;
+
+void PrimMST(vector<vector<wvpair>>& graph, int start) {
+    int numNodes = graph.size();
+    vector<int> key(numNodes, INT_MAX);
+    vector<bool> visited(numNodes, false);
+    vector<int> parent(numNodes, -1);
+
+    priority_queue<wvpair, vector<wvpair>, greater<wvpair>> priority_queue;
+
+    key[start] = 0;
+    priority_queue.push(make_pair(0, start));
+
+    while (!priority_queue.empty()) {
+        int u = priority_queue.top().second;
+        priority_queue.pop();
+
+        visited[u] = true;
+
+        for (wvpair& edge : graph[u]) {
+            int v = edge.first;
+            int weight = edge.second;
+
+            if (!visited[v] && weight < key[v]) {
+                key[v] = weight;
+                parent[v] = u;
+                priority_queue.push(make_pair(key[v], v));
+            }
+        }
+    }
+
+    cout << "Minimum Spanning Tree:" << endl;
+    for (int v = 1; v < numNodes; ++v) {
+        cout << "(" << parent[v] << ", " << v << ") - " << key[v] << endl;
+    }
+}
+
+int main() {
+    // Graph as an adjacency list
+    vector<vector<wvpair>> graph = {
+        {{1, 3}, {5, 1}},          // Node 0
+        {{0, 3}, {2, 2}, {3, 1}, {4, 10}}, // Node 1
+        {{1, 2}, {3, 3}, {5, 5}},  // Node 2
+        {{1, 1}, {2, 3}, {4, 5}},  // Node 3
+        {{1, 10}, {3, 5}, {5, 4}}, // Node 4
+        {{0, 1}, {2, 5}, {4, 4}}   // Node 5
+    };
+
+    int startNode = 0;
+    PrimMST(graph, startNode);
+
+    return 0;
+}
