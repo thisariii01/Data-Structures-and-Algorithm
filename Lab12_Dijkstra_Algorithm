@@ -1,0 +1,97 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <limits>
+
+using namespace std;
+
+const int INF = numeric_limits<int>::max();
+
+// Structure to represent a city and time taken from the source city
+struct City {
+    int id;
+    int timeTaken;
+
+    City(int _id, int _timeTaken) : id(_id), timeTaken(_timeTaken) {}
+
+    bool operator<(const City& other) const {
+        return timeTaken > other.timeTaken;
+    }
+};
+
+// Dijkstra's algorithm to find the shortest time between a source city and all other cities
+void dijkstra(const vector<vector<int>>& graph, int source) {
+    int numCities = graph.size();
+
+    // Create a priority queue to store cities based on their distances
+    priority_queue<City> pq;
+
+    // Create a vector to store the times taken from the source city
+    vector<int> times(numCities, INF);
+
+    // Initialize the time taken for the source city as 0
+    times[source] = 0;
+
+    // Push the source city into the priority queue
+    pq.push(City(source, 0));
+
+    while (!pq.empty()) {
+        City current = pq.top();
+        pq.pop();
+
+        int cityId = current.id;
+        int cityTime = current.timeTaken;
+
+        // Ignore cities with times greater than the current times
+        if (cityTime > times[cityId])
+            continue;
+
+        // Iterate over the neighbors of the current city
+        for (int neighbor = 0; neighbor < numCities; ++neighbor) {
+            // Ignore if there is no edge between the current city and its neighbor
+            if (graph[cityId][neighbor] == 0)
+                continue;
+
+            int newTime = cityTime + graph[cityId][neighbor];
+
+            // Update the time if the new time is smaller
+            if (newTime < times[neighbor]) {
+                times[neighbor] = newTime;
+                pq.push(City(neighbor, newTime));
+            }
+        }
+    }
+
+    // Print the shortest times from the source city to all other cities
+    for (int i = 0; i < numCities; ++i) {
+        cout << "Shortest time to City " << i << ": ";
+        if (times[i] == INF)
+            cout << "Not reachable";
+        else
+            cout << times[i];
+        cout << endl;
+    }
+}
+
+int main() {
+    // Adjacency matrix for the graph
+    vector<vector<int>> graph = {
+        {0, 10, 0, 0, 15, 5},
+        {10, 0, 10, 30, 0, 0},
+        {0, 10, 0, 12, 5, 0},
+        {0, 30, 12, 0, 0, 20},
+        {15, 0, 5, 0, 0, 0},
+        {5, 0, 0, 20, 0, 0}
+    };
+
+    int numCities = graph.size();
+
+    // Run Dijkstra's algorithm for each source city
+    for (int source = 0; source < numCities; ++source) {
+        cout << "Source City: " << source << endl;
+        dijkstra(graph, source);
+        cout << endl;
+    }
+
+    return 0;
+}
